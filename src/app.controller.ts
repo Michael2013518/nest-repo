@@ -1,8 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LoginGuard } from './login.guard';
+import { TimeInterceptor } from './time.interceptor';
 
 @Controller()
+// @UseInterceptors(TimeInterceptor)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -19,6 +21,7 @@ export class AppController {
     return 'aaa';
   }
   @Get('bbb')
+  @UseInterceptors(TimeInterceptor)
   bbb(): string {
     console.log('bbb');
     return 'bbb';
