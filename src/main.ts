@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Request, Response, NextFunction } from 'express';
 import { LoginGuard } from './login.guard';
 import { TimeInterceptor } from './time.interceptor';
+import { ValidatePipe } from './validate.pipe';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   /**
@@ -17,8 +18,14 @@ async function bootstrap() {
    * 全局守卫
    */
   //app.useGlobalGuards(new LoginGuard());
-  // 作用与所有Controller的拦截器
+  /**
+   * 作用与所有Controller的拦截器
+   */
   //app.useGlobalInterceptors(new TimeInterceptor());
+  /**
+   * 全局管道
+   */
+  //app.useGlobalPipes(new ValidatePipe());
   await app.listen(3000);
 }
 bootstrap();
