@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "name": "Debug Node",
+      "program": "${workspaceFolder}/app.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "stopOnEntry": true,
+      "type": "node"
+    },
+    {
+      "name": "Debug Nest",
+      "request": "launch",
+      "runtimeArgs": ["run", "start:dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "type": "node"
+    }
+  ]
+}
