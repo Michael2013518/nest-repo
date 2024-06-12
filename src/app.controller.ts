@@ -7,6 +7,7 @@ import {
   ValidationPipe,
   Query,
   UsePipes,
+  Inject,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LoginGuard } from './login.guard';
@@ -17,6 +18,7 @@ import { TestFilter } from './test.filter';
 @Controller()
 // @UseInterceptors(TimeInterceptor)
 // @UsePipes(ValidatePipe)
+// @UseFilters(TestFilter)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

@@ -1,11 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LogMiddleware } from './log.middleware';
 import { LoginGuard } from './login.guard';
 import { TimeInterceptor } from './time.interceptor';
 import { ValidatePipe } from './validate.pipe';
+import { TestFilter } from './test.filter';
 
 @Module({
   imports: [],
@@ -24,6 +25,10 @@ import { ValidatePipe } from './validate.pipe';
     //   provide: APP_PIPE,
     //   useClass: ValidatePipe,
     // },
+    {
+      provide: APP_FILTER,
+      useClass: TestFilter,
+    },
   ],
 })
 export class AppModule implements NestModule {
