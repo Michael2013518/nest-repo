@@ -1,30 +1,4 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Nest ArgumentHost & ExecutionContext
 
 ## Installation
 
@@ -45,29 +19,83 @@ $ pnpm run start:dev
 $ pnpm run start:prod
 ```
 
-## Test
+
+## Create filter
+
+1. First Step
 
 ```bash
-# unit tests
-$ pnpm run test
+$ nest g filter aaa --no-spec --flat
+```
+2. Second Step
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+```
+    // AaaException.ts
+    export class AaaException extends BadRequestException {
+      constructor(message?: string) {
+        super(message);
+      }
+    }
 ```
 
-## Support
+3. Third Step
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+    // AaaFilter.ts
+    import { ArgumentHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+    import { AaaException } from './AaaException';
 
-## Stay in touch
+    @Catch(AaaException)
+    export class AaaFilter implements ExceptionFilter {
+        catch(exception: AaaException, host: ArgumentHost) {
+            const ctx = host.switchToHttp();
+            const response = ctx.getResponse();
+            const request = ctx.getRequest();
+            const status = exception.getStatus();
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+            response
+                .status(status)
+                .json({
+                    statusCode: status,
+                    timestamp: new Date().toISOString(),
+                    path: request.url,
+                });
+        }
+    }
+```
+4. Fourth Step
 
-## License
+```
+    // app.controller.ts
+    import {
+  Controller,
+  Get,
+  SetMetadata,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
+import { AppService } from './app.service';
+import { AaaException } from './aaaException';
+import { AaaFilter } from './aaa.filter';
+import { AaaGuard } from './aaa.guard';
+import { Roles } from './roles.decorator';
+import { Role } from './role';
 
-Nest is [MIT licensed](LICENSE).
+@Controller()
+//@SetMetadata('roles', [Role.Admin])
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  @UseGuards(AaaGuard)
+  @UseFilters(AaaFilter)
+  @Roles(Role.Admin)
+  getHello(): string {
+    throw new AaaException('aaa', 'bbb');
+    return this.appService.getHello();
+  }
+}
+
+```
+
+
