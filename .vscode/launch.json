@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "name": "Nest Debug",
+      "request": "launch",
+      "runtimeArgs": ["run", "start:dev"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "type": "node"
+    }
+  ]
+}
