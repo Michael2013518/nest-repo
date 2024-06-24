@@ -5,7 +5,12 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  FileTypeValidator,
   Body,
+  MaxFileSizeValidator,
+  ParseFilePipe,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import {
   AnyFilesInterceptor,
@@ -16,7 +21,7 @@ import {
 import { AppService } from './app.service';
 import { storage } from './file-storage';
 import { FileSizeValidatePipe } from './file-size-validate-pipe';
-
+import { FileValidators} from './file-validators'
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -116,5 +121,35 @@ export class AppController {
   ) {
     console.log('body', body);
     console.log('file', file);
+  }
+
+  @Post('ggg')
+  @UseInterceptors(FileInterceptor('aaa', {
+    dest: 'uploads'
+  }))
+  uploadFiles6(@UploadedFile(new ParseFilePipe({
+    exceptionFactory(error) {
+      throw new HttpException('文件上传失败', HttpStatus.BAD_REQUEST);
+    },
+    validators: [
+      new MaxFileSizeValidator({ maxSize: 1000}),
+      new FileTypeValidator({fileType: 'image/jpeg'})
+    ]
+  })) file: Express.Multer.File, @Body() body){
+    console.log(file)
+    console.log(body)
+  }
+
+  @Post('hhh')
+  @UseInterceptors(FileInterceptor('aaa', {
+    dest: 'uploads'
+  }))
+  uploadFiles7(@UploadedFile(new ParseFilePipe({
+    validators: [
+      new FileValidators({})
+    ]
+  })) file: Express.Multer.File, @Body() body){
+    console.log(file)
+    console.log(body)
   }
 }

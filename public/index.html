@@ -1,39 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FileUpload</title>
   <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
 </head>
+
 <body>
-  <input id="fileInput" type="file" multiple/>
+  <input id="fileInput" type="file" multiple />
   <script>
     const fileInput = document.querySelector('#fileInput');
 
     async function formData() {
-        const data = new FormData();
-        data.set('name','michael');
-        data.set('age', 30);
-        data.set('aaa', fileInput.files[0]);
-    
-        const res = await axios.post('/aaa', data);
-        console.log(res);
+      const data = new FormData();
+      data.set('name', 'michael');
+      data.set('age', 30);
+      data.set('aaa', fileInput.files[0]);
+
+      const res = await axios.post('/aaa', data);
+      console.log(res);
     }
     async function formData2() {
-                const data = new FormData();
-                data.set('name','michael');
-                data.set('age', 31);
-                [...fileInput.files].forEach(item => {
-                    data.append('file', item)
-                })
+      const data = new FormData();
+      data.set('name', 'michael');
+      data.set('age', 31);
+      [...fileInput.files].forEach(item => {
+        data.append('file', item)
+      })
 
-                const res = await axios.post('/bbb', data);
-                console.log(res);
-            }
+      const res = await axios.post('/bbb', data);
+      console.log(res);
+    }
     async function formData3() {
       const data = new FormData();
-      data.set('name','michael');
+      data.set('name', 'michael');
       data.set('age', 32);
       data.set('sex', true)
       data.append('aaa', fileInput.files[0]);
@@ -46,7 +48,7 @@
     }
     async function formData4() {
       const data = new FormData();
-      data.set('name','michael');
+      data.set('name', 'michael');
       data.set('age', 32);
       data.set('sex', true)
       data.append('aaa', fileInput.files[0]);
@@ -58,7 +60,7 @@
     }
     async function formData5() {
       const data = new FormData();
-      data.set('name','michael');
+      data.set('name', 'michael');
       data.set('age', 32);
       data.set('sex', true)
       data.append('aaa', fileInput.files[0]);
@@ -69,15 +71,34 @@
       console.log(res);
     }
     async function formData6() {
-        const data = new FormData();
-        data.set('name','michael');
-        data.set('age', 30);
-        data.set('aaa', fileInput.files[0]);
-    
-        const res = await axios.post('/fff', data);
-        console.log(res);
+      const data = new FormData();
+      data.set('name', 'michael');
+      data.set('age', 30);
+      data.set('aaa', fileInput.files[0]);
+
+      const res = await axios.post('/fff', data);
+      console.log(res);
     }
-    fileInput.onchange = formData6
+    async function formData7() {
+      const data = new FormData();
+      data.set('name', 'michael');
+      data.set('age', 30);
+      data.set('aaa', fileInput.files[0]);
+
+      const res = await axios.post('/ggg', data);
+      console.log(res);
+    }
+    async function formData8() {
+      const data = new FormData();
+      data.set('name', 'michael');
+      data.set('age', 30);
+      data.set('aaa', fileInput.files[0]);
+      console.log(fileInput.files[0])
+      const res = await axios.post('/hhh', data);
+      console.log(res);
+    }
+    fileInput.onchange = formData8
   </script>
 </body>
+
 </html>
