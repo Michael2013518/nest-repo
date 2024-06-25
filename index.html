@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <input id="fileInput" type="file" />
+    <input id="fileInput" type="file" multiple />
 
     <script>
         const fileInput = document.getElementById('fileInput');
@@ -22,7 +22,58 @@
             const response = await axios.post('http://localhost:30000/aaa', data)
             console.log(response)
         }
-        fileInput.onchange = uploadFile
+        async function formData2() {
+            const data = new FormData();
+            data.set('name', 'michael');
+            data.set('age', 30);
+            [...fileInput.files].forEach(file => {
+                data.append('bbb', file)
+            })
+
+            const response = await axios.post('http://localhost:30000/bbb', data)
+            console.log(response)
+        }
+        async function formData3() {
+            const data = new FormData();
+            data.set('name', 'michael');
+            data.set('age', 30);
+            [...fileInput.files].forEach((file, index) => {
+                data.append([0,1].includes(index) ?'ccc': 'ddd', file)
+            })
+
+            const response = await axios.post('http://localhost:30000/ccc', data)   
+            console.log(response)
+        }
+        async function formData4() {
+            const data = new FormData();
+            data.set('name', 'michael');
+            data.set('age', 30);
+            [...fileInput.files].forEach((file, index) => {
+                let keyName = ''
+                switch (index) {
+                    case 0:
+                    keyName = 'aaa'
+                        break;
+                    case 1:
+                        keyName = 'bbb'
+                        break;
+                    case 2:
+                        keyName = 'ccc'
+                        break;
+                    case 3:
+                        keyName = 'ddd'
+                        break;
+                    default:
+                        keyName = 'aaa'
+                        break;
+                }
+                data.append(keyName, file)  
+            })
+
+            const response = await axios.post('http://localhost:30000/ddd', data)   
+            console.log(response)
+        }
+        fileInput.onchange = formData4
     </script>
 </body>
 
