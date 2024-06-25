@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Large Fileupload</title>
+  <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
+</head>
+<body>
+  <input type="file" id="fileInput" multiple>
+  <script>
+    const fileInput = document.querySelector('#fileInput')
+    const chunkSize = 20 * 1024
+
+    async function formData() {
+      const data = new FormData()
+      data.set('name', 'michael');
+      data.set('age', '20');
+      data.set('sex', true);
+      const file = fileInput.files[0]
+      const chunks = [];
+      let startPos = 0;
+      while (startPos < file.size) {
+        const endPos = startPos + chunkSize;
+        chunks.push(file.slice(startPos, endPos))
+        startPos = endPos;
+      }
+      const randomStr = Math.random().toString().slice(2, 8);
+      const tasks = []
+      chunks.forEach((chunk, index) => {
+        const data = new FormData()
+        data.set('name', randomStr + '_' + file.name + '-' + index)
+        data.append('files', chunk)
+        tasks.push(axios.post('/upload', data))
+      })
+      await Promise.all(tasks)
+      axios.get('/merge?name=' + randomStr + '_' + file.name)
+      // [...fileInput.files].forEach(file => {
+      //   data.append('files', file)
+      // })
+      // const response = await axios.post('/upload', data)
+      // console.log(response)
+    }
+    fileInput.onchange = formData
+  </script>
+</body>
+</html>
