@@ -1,68 +1,183 @@
 import { AppDataSource } from "./data-source"
 import { User } from "./entity/User"
-
+import { IdCard} from './entity/IdCard'
+import { Department} from './entity/Department'
+import { Employee} from './entity/Employee'
+import { Article} from './entity/Article'
+import { Tag} from './entity/Tag'
 AppDataSource.initialize().then(async () => {
 
-    console.log("Inserting a new user into the database...")
     /**
-     *  添加： 单条
-     */
-    // const user = new User()
-    // user.firstName = "Timber"
-    // user.lastName = "Saw"
-    // user.age = 25
-    /**
-     * 添加：多条
+     *  添加数据
      */ 
-    // await AppDataSource.manager.save(User,[
-    //     { id: 2 ,firstName: 'ccc111', lastName: 'ccc', age: 21},
-    //     { id: 3 ,firstName: 'ddd222', lastName: 'ddd', age: 22},
-    //     { id: 4, firstName: 'eee333', lastName: 'eee', age: 23}
-    // ])
-    //  查询
-    // const users = await AppDataSource.manager.find(User)
-    //  删除
-    // const user = new User()
-    // user.id = 2
-    // await AppDataSource.manager.remove(User, user)
-    /**
-     *  查询：根据年龄
-     */
-    // const users = await AppDataSource.manager.findBy(User, { age: 23})
-    // console.log(users)
-    /**
-     * 查询：记录和条数
-     */ 
-    // const [user, count] = await AppDataSource.manager.findAndCount(User)
-    // console.log(user, count)
-    /**
-     *  查询：条件
-     */ 
-    // const [users, count] = await AppDataSource.manager.findAndCountBy(User, {
-    //     age: 23
-    // })
-    // console.log(users, count);
-    /**
-     * query builder
-     */ 
-    // const queryBuilder = await AppDataSource.manager.createQueryBuilder()
-    // const user = await queryBuilder.select('user').from(User, 'user').where('user.age = :age', { age: 22 }).getOne()
-    // console.log(user)
-    /**
-     * 多表关联查询，辅助事务
-     */ 
-    await AppDataSource.manager.transaction(async manager => {
-        await manager.save(User, {
-            id: 5,
-            firstName: 'Grace',
-            lastName: 'Lu',
-            age: 40
-        });
-    });
-    /**
-     *  实体类查询
-     */ 
-    await AppDataSource.manager.getRepository(User).find({
-        where: { age: 40 }
+    /*
+    const user = new User()
+    user.firstName = "Michael"
+    user.lastName = "Chueng"
+    user.age = 40
+    
+    const idCard = new IdCard()
+    idCard.cardName = '身份证'
+    idCard.user = user
+
+    // await AppDataSource.manager.save(user)
+    await AppDataSource.manager.save(idCard)
+    const users = await AppDataSource.manager.find(IdCard, {
+        relations: {
+            user: true
+        }
     })
+    console.log(users)
+    
+   /*
+   const ics = await AppDataSource.manager.getRepository(IdCard)
+   .createQueryBuilder("idCard")
+   .leftJoinAndSelect("idCard.user", "user")
+   .getMany()
+   
+   const icss = await AppDataSource.manager.createQueryBuilder(IdCard,'idCard')
+   .leftJoinAndSelect('idCard.user','user')
+   .getMany()
+   console.log(icss)
+   */
+  /**
+   *  更新记录
+   */
+  /*
+  const user = new User();
+    user.id = 2;
+    user.firstName = 'Michael9527';
+    user.lastName = 'Cheung';
+    user.age = 20;
+
+    const idCard = new IdCard();
+    idCard.id = 1;
+    idCard.cardName = '411325198310283549';
+    idCard.user = user;
+
+    await AppDataSource.manager.save(idCard);
+    */
+   /**
+    * 删除记录
+    */
+   /*
+   const idCard = await AppDataSource.manager.findOne(IdCard, {
+    where: {
+        id: 1
+    },
+    relations: {
+        user: true
+    }
+})
+await AppDataSource.manager.delete(User, idCard.user.id)
+await AppDataSource.manager.delete(IdCard, idCard.id)
+*/
+/**
+ * 主表查询关联数据
+ */
+/*
+const user = await AppDataSource.manager.find(User, {
+    relations: {
+        idCard: true
+    }
+})
+console.log(user)
+*/
+/**
+ * 添加部门、员工 
+ */
+/*
+const department = new Department()
+department.name = '技术部'
+const employee1 = new Employee()
+employee1.name = '张三'
+employee1.department = department
+const employee2 = new Employee()
+employee2.name = '李四'
+employee2.department = department
+await AppDataSource.manager.save([department, employee1, employee2])
+*/
+/**
+ * 查询部门的员工
+ */ 
+/*
+const department =await AppDataSource.manager.find(Department, {
+    relations: {
+        employees: true
+    }
+});
+console.log(department.map(item => item.employees))
+*/
+/**
+ * 添加记录
+ */ 
+/*
+const a1 = new Article();
+    a1.title = '中国电动汽车产业调研报告';
+    a1.content = '电动汽车有着不可替换的优化，环保加高科技，促使中国电动汽车产业蓬勃发展。';
+
+    const a2 = new Article();
+    a2.title = '程序员经济';
+    a2.content = '程序员经济是未来经济的重要组成部分，程序员经济将改变人们的生活方式。';
+
+    const t1 = new Tag();
+    t1.name = '电动汽车';
+
+    const t2 = new Tag();
+    t2.name = '经济报告';
+
+    const t3 = new Tag();
+    t3.name = '程序员';
+
+    a1.tags = [t1,t2];
+    a2.tags = [t2,t3];
+
+    const entityManager = AppDataSource.manager;
+
+    await entityManager.save(t1);
+    await entityManager.save(t2);
+    await entityManager.save(t3);
+
+    await entityManager.save(a1);
+    await entityManager.save(a2);
+    */
+/**
+ * 查询记录
+ */   
+/* 
+   const articles = await AppDataSource.manager.find(Article, {
+    relations: {
+        tags: true
+    }
+   })
+   console.log(articles)
+   console.log(articles.map(item => item.tags))
+*/
+/*
+const articles = await AppDataSource.manager.createQueryBuilder(Article, 'article')
+    .leftJoinAndSelect('article.tags', 'tag')
+    .getMany()
+console.log(articles.map(item => item.tags))
+*/
+/**
+ * 以上同样可以查询到tags
+ */
+/*
+const articles = await AppDataSource.manager.getTreeRepository(Article)
+    .createQueryBuilder('article')
+    .leftJoinAndSelect('article.tags', 'tag')
+    .getMany()
+console.log(articles.map(item => item.tags))
+*/
+const article = await AppDataSource.manager.findOne(Article, {
+    where: {
+        id: 2
+    },
+    relations: {
+        tags: true
+    }
+})
+article.title = '程序员经济发展的未来'
+article.tags = article.tags.filter(item => item.name.includes('程序员'))
+await AppDataSource.manager.save(article)
 }).catch(error => console.log(error))
