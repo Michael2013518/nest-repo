@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Inject,
 } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
@@ -13,9 +14,12 @@ import { UpdateCityDto } from './dto/update-city.dto';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { City } from './entities/city.entity';
+import { ConfigService } from '@nestjs/config';
 @Controller('city')
 export class CityController {
   constructor(private readonly cityService: CityService) {}
+  @Inject(ConfigService)
+  private configService: ConfigService;
 
   @InjectEntityManager()
   private manager: EntityManager;
@@ -108,6 +112,7 @@ export class CityController {
       cityChild.parent = parent;
     }
     await this.manager.save(City, cityChild);
+    console.log(this.configService.get('aaa.bbb.ccc'));
     return this.manager.getTreeRepository(City).findTrees();
   }
 
