@@ -10,10 +10,12 @@ import { Article } from './article/entities/article.entity';
 import * as path from 'path';
 import config from './config';
 import config2 from './ymlConfig';
+import { createClient } from 'redis';
 @Module({
   imports: [
     CityModule,
     ConfigModule.forRoot({
+      // 配置模块
       isGlobal: true,
       envFilePath: [
         path.join(process.cwd(), '.prod.env'),
@@ -22,6 +24,7 @@ import config2 from './ymlConfig';
       load: [config2, config],
     }),
     TypeOrmModule.forRoot({
+      //mysql
       type: 'mysql',
       host: 'localhost',
       port: 3360,
@@ -40,6 +43,21 @@ import config2 from './ymlConfig';
     ArticleModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'REDIS_CLIENT', // redis
+      async useFactory() {
+        const client = createClient({
+          socket: {
+            host: 'localhost',
+            port: 6379,
+          },
+        });
+        await client.connect();
+        return client;
+      },
+    },
+  ],
 })
 export class AppModule {}
