@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { City } from './city/entities/city.entity';
-import { Article } from './article/entities/article.entity';
+// import { City } from './city/entities/city.entity';
+// import { Article } from './article/entities/article.entity';
 
 export default new DataSource({
   type: 'mysql',
@@ -11,7 +11,7 @@ export default new DataSource({
   database: 'tree_test',
   synchronize: false,
   logging: true,
-  entities: [City, Article],
+  entities: [],
   poolSize: 10,
   migrations: ['src/migration/**.ts'],
   connectorPackage: 'mysql2',

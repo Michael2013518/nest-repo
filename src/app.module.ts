@@ -2,18 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CityModule } from './city/city.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { City } from './city/entities/city.entity';
-import { ArticleModule } from './article/article.module';
-import { Article } from './article/entities/article.entity';
 import * as path from 'path';
 import config from './config';
 import config2 from './ymlConfig';
 import { createClient } from 'redis';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
-    CityModule,
     ConfigModule.forRoot({
       // 配置模块
       isGlobal: true,
@@ -23,6 +18,13 @@ import { createClient } from 'redis';
       ],
       load: [config2, config],
     }),
+    JwtModule.register({
+      secret: 'michael',
+      signOptions: {
+        expiresIn: '7d',
+      },
+    }),
+    /*
     TypeOrmModule.forRoot({
       //mysql
       type: 'mysql',
@@ -31,7 +33,7 @@ import { createClient } from 'redis';
       username: 'root',
       password: 'root',
       database: 'tree_test',
-      entities: [City, Article],
+      entities: [],
       synchronize: false,
       logging: true,
       poolSize: 10,
@@ -40,7 +42,7 @@ import { createClient } from 'redis';
         authPlugin: 'sha256_password',
       },
     }),
-    ArticleModule,
+    */
   ],
   controllers: [AppController],
   providers: [
