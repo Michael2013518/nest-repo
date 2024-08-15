@@ -10,7 +10,7 @@ async function bootstrap() {
       '应用接口文档包括用户、角色、权限、菜单、字典、日志、文件等接口',
     )
     .setVersion('1.0')
-    .addTag('测试接口')
+    .addTag('应用接口')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
