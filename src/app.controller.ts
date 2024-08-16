@@ -1,11 +1,29 @@
-import { Controller, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Inject, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { SessionService } from 'src/session/session.service';
+import { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Inject(SessionService)
+  private sessionService: SessionService;
+
+  @Get('count')
+  async getCount(@Req() req: Request, @Res({ passthrough: true}) res: Response) {
+    const sid = req.cookies.sid;
+    const session = await this.sessionService.getSession<{count: string}>(sid);
+
+    const curCount = session.count ? parseInt(session.count) + 1 : 1;
+    const curSid = await this.sessionService.setSession(sid, {
+      count: curCount
+    });
+
+    res.cookie('sid', curSid, { maxAge: 1800000 });
+    return curCount;
+}
   @Get()
   @ApiTags('测试')
   getHello(): string {

@@ -2,6 +2,9 @@
 /dist
 /node_modules
 /mysql
+/redis
+pnpm-lock.yaml
+yarn.lock
 .env
 *.dio
 # Logs
