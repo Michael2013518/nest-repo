@@ -4,6 +4,7 @@
 /mysql
 .env
 *.dio
+/redis
 # Logs
 logs
 *.log
